@@ -244,34 +244,34 @@ export function AddCandidateModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 overflow-y-auto animate-in fade-in duration-200">
-      <div className="w-full max-w-3xl rounded-2xl border border-slate-200 bg-white p-6 sm:p-7 shadow-xl animate-in zoom-in-95 duration-150 my-6">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+      <div className="w-full max-w-3xl rounded-2xl border border-border bg-white p-6 sm:p-7 shadow-xl animate-in zoom-in-95 duration-150 my-6">
+        {/* Modal Header */}
+        <div className="flex items-center justify-between border-b border-border pb-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
               <UserPlus className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-slate-900 tracking-tight">Add Candidate for Screening</h3>
-              <p className="text-xs text-slate-500">Intake candidate resume and execute pre-score integrity pipeline</p>
+              <h3 className="text-base font-bold font-heading text-foreground tracking-tight">Add Candidate for Screening</h3>
+              <p className="text-xs text-muted-foreground">Intake candidate resume and execute pre-score integrity pipeline</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors cursor-pointer"
+            className="rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* 1-Click Test Fixtures Bar */}
-        <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+        <div className="mt-5 rounded-xl border border-border bg-muted/40 p-4">
           <div className="flex items-center justify-between mb-2.5">
-            <span className="flex items-center gap-1.5 text-xs font-bold text-slate-800 uppercase tracking-wide">
-              <Sparkles className="h-3.5 w-3.5 text-blue-600" />
+            <span className="flex items-center gap-1.5 text-xs font-bold text-foreground uppercase tracking-wide">
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
               1-Click Demo & Adversarial Fixtures:
             </span>
-            <span className="text-[11px] text-slate-500 font-mono">Load sample profile</span>
+            <span className="text-[11px] text-muted-foreground font-mono">Load sample profile</span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
             {SAMPLE_PRESETS.map((p, idx) => (
@@ -279,15 +279,15 @@ export function AddCandidateModal({
                 key={idx}
                 type="button"
                 onClick={() => loadPreset(p)}
-                className="flex flex-col items-start rounded-lg border border-slate-200 bg-white p-2.5 text-left hover:border-blue-400 hover:bg-blue-50/30 transition-all cursor-pointer shadow-2xs"
+                className="flex flex-col items-start rounded-lg border border-border bg-card p-2.5 text-left hover:border-primary/40 hover:bg-primary/10 transition-all cursor-pointer shadow-2xs"
               >
                 <div className="flex items-center justify-between w-full">
-                  <span className="text-xs font-bold text-slate-800">{p.name}</span>
+                  <span className="text-xs font-bold text-foreground">{p.name}</span>
                   <span className={`rounded-md border px-1.5 py-0.2 text-[9px] font-bold uppercase tracking-wider ${p.badgeColor}`}>
                     {p.badge}
                   </span>
                 </div>
-                <p className="mt-1 text-[11px] text-slate-500 line-clamp-1">{p.desc}</p>
+                <p className="mt-1 text-[11px] text-muted-foreground line-clamp-1">{p.desc}</p>
               </button>
             ))}
           </div>
@@ -303,7 +303,7 @@ export function AddCandidateModal({
         <form onSubmit={handleSubmit} className="mt-5 space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+              <label className="block text-xs font-bold text-foreground uppercase tracking-wider">
                 Candidate Full Name
               </label>
               <input
@@ -311,12 +311,12 @@ export function AddCandidateModal({
                 placeholder="e.g. Jane Doe"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-hidden focus:ring-1 focus:ring-blue-500 transition-colors"
+                className="mt-1.5 w-full rounded-xl border border-border bg-card px-3.5 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-hidden focus:ring-1 focus:ring-primary transition-colors"
                 required
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+              <label className="block text-xs font-bold text-foreground uppercase tracking-wider">
                 Email Address (Optional)
               </label>
               <input
@@ -324,17 +324,17 @@ export function AddCandidateModal({
                 placeholder="jane@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-hidden focus:ring-1 focus:ring-blue-500 transition-colors"
+                className="mt-1.5 w-full rounded-xl border border-border bg-card px-3.5 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-hidden focus:ring-1 focus:ring-primary transition-colors"
               />
             </div>
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+              <label className="block text-xs font-bold text-foreground uppercase tracking-wider">
                 Resume Plain Text (Untrusted Input Payload)
               </label>
-              <span className="text-[11px] font-mono text-slate-500">
+              <span className="text-[11px] font-mono text-muted-foreground">
                 {wordCount} words • Untrusted Data Isolation
               </span>
             </div>
@@ -343,20 +343,20 @@ export function AddCandidateModal({
               placeholder="Paste candidate resume content here..."
               value={resumeText}
               onChange={(e) => setResumeText(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-white p-3.5 font-mono text-xs text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-hidden focus:ring-1 focus:ring-blue-500 transition-colors leading-relaxed"
+              className="w-full rounded-xl border border-border bg-card p-3.5 font-mono text-xs text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-hidden focus:ring-1 focus:ring-primary transition-colors leading-relaxed"
               required
             />
           </div>
 
           {/* Pre-Scoring Pipeline Toggle */}
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 flex items-center justify-between">
+          <div className="rounded-xl border border-border bg-muted/40 p-3 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-blue-600 border border-blue-100">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20">
                 <ShieldCheck className="h-4 w-4" />
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-900">Pre-Scoring Integrity Verification</p>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-xs font-bold text-foreground">Pre-Scoring Integrity Verification</p>
+                <p className="text-[11px] text-muted-foreground">
                   Runs manipulation, timeline overlap, and templated inflation inspection before scoring
                 </p>
               </div>
@@ -368,42 +368,42 @@ export function AddCandidateModal({
                 onChange={(e) => setAutoAnalyze(e.target.checked)}
                 className="sr-only peer"
               />
-              <div className="w-10 h-5 bg-slate-300 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+              <div className="w-10 h-5 bg-muted peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
             </label>
           </div>
 
           {/* Live Pipeline Scanning Progress Visualizer */}
           {pipelineStage > 0 && (
-            <div className="rounded-xl border border-blue-200 bg-blue-50/70 p-4 space-y-2 animate-in fade-in duration-200">
-              <div className="flex items-center gap-2 text-xs font-bold text-blue-900">
-                <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
+            <div className="rounded-xl border border-primary/20 bg-primary/10 p-4 space-y-2 animate-in fade-in duration-200">
+              <div className="flex items-center gap-2 text-xs font-bold text-foreground">
+                <Loader2 className="h-4 w-4 animate-spin text-primary" />
                 <span>Executing Automated Screening Pipeline</span>
               </div>
               <div className="space-y-1 pl-6 text-xs">
-                <div className={`flex items-center gap-2 ${pipelineStage >= 1 ? "text-emerald-700 font-semibold" : "text-slate-500"}`}>
+                <div className={`flex items-center gap-2 ${pipelineStage >= 1 ? "text-emerald-700 font-semibold" : "text-muted-foreground"}`}>
                   <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
                   <span>Stage 1: Quarantining Untrusted Resume & Inspecting Integrity Signals...</span>
                 </div>
-                <div className={`flex items-center gap-2 ${pipelineStage >= 2 ? "text-emerald-700 font-semibold" : "text-slate-500"}`}>
-                  {pipelineStage >= 2 ? <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> : <Loader2 className="h-3.5 w-3.5 animate-spin text-blue-600" />}
+                <div className={`flex items-center gap-2 ${pipelineStage >= 2 ? "text-emerald-700 font-semibold" : "text-muted-foreground"}`}>
+                  {pipelineStage >= 2 ? <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> : <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />}
                   <span>Stage 2: Evaluating Candidate Fit Against Stated Role Requirements...</span>
                 </div>
               </div>
             </div>
           )}
 
-          <div className="mt-6 flex justify-end gap-2.5 border-t border-slate-100 pt-4">
+          <div className="mt-6 flex justify-end gap-2.5 border-t border-border pt-4">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer"
+              className="rounded-xl border border-border bg-card px-4 py-2 text-xs font-bold text-muted-foreground hover:bg-muted transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-blue-700 disabled:opacity-50 transition-all cursor-pointer"
+              className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2 text-xs font-bold text-primary-foreground shadow-sm hover:bg-primary/90 disabled:opacity-50 transition-all cursor-pointer"
             >
               {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
               {isSubmitting ? "Processing Pipeline..." : "Intake & Screen Candidate"}

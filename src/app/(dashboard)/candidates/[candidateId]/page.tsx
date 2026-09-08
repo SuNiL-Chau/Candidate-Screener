@@ -148,15 +148,15 @@ export default function CandidateDetailPage({
           <button
             onClick={handleReanalyze}
             disabled={analyzing}
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700 disabled:opacity-50 transition-all shadow-2xs cursor-pointer"
+            className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-4 py-2 text-xs font-bold text-foreground hover:border-primary/40 hover:bg-primary/10 hover:text-primary disabled:opacity-50 transition-all shadow-2xs cursor-pointer"
           >
-            <RefreshCw className={`h-3.5 w-3.5 ${analyzing ? "animate-spin text-blue-600" : ""}`} />
+            <RefreshCw className={`h-3.5 w-3.5 ${analyzing ? "animate-spin text-primary" : ""}`} />
             <span>{analyzing ? "Auditing Pipeline..." : "Re-run Automated Audit"}</span>
           </button>
           <button
             onClick={handleDelete}
             disabled={deleting}
-            className="inline-flex items-center gap-2 rounded-xl border border-rose-200 bg-white px-4 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 disabled:opacity-50 transition-all shadow-2xs cursor-pointer"
+            className="inline-flex items-center gap-2 rounded-xl border border-rose-200 bg-card px-4 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 disabled:opacity-50 transition-all shadow-2xs cursor-pointer"
           >
             <Trash2 className="h-3.5 w-3.5" />
             <span>Delete</span>
@@ -168,12 +168,12 @@ export default function CandidateDetailPage({
       <div className="minimal-card p-7">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
           <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-blue-600 text-xl font-black text-white shadow-sm">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-primary text-xl font-black text-primary-foreground shadow-sm">
               {getInitials(candidate.name)}
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-3">
-                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+                <h1 className="text-2xl sm:text-3xl font-extrabold font-heading tracking-tight text-foreground">
                   {candidate.name}
                 </h1>
                 <IntegrityBadge
@@ -183,12 +183,12 @@ export default function CandidateDetailPage({
                 />
               </div>
 
-              <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500 font-mono">
-                <span>Position: <strong className="text-slate-800">{candidate.role?.title}</strong></span>
+              <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground font-mono">
+                <span>Position: <strong className="text-foreground">{candidate.role?.title}</strong></span>
                 {candidate.email && (
                   <>
                     <span>•</span>
-                    <span className="text-blue-600">{candidate.email}</span>
+                    <span className="text-primary">{candidate.email}</span>
                   </>
                 )}
                 <span>•</span>
@@ -198,16 +198,16 @@ export default function CandidateDetailPage({
           </div>
 
           {/* Quick Fit Summary Metric */}
-          <div className="flex items-center gap-5 rounded-2xl border border-slate-200 bg-slate-50/70 p-4 px-6">
+          <div className="flex items-center gap-5 rounded-2xl border border-border bg-muted/40 p-4 px-6">
             <div className="text-right">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest font-mono block">
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest font-mono block">
                 Calculated Fit Match
               </span>
-              <span className="text-2xl font-black text-slate-900 font-mono">{score?.score ?? "--"}%</span>
+              <span className="text-2xl font-black text-foreground font-mono">{score?.score ?? "--"}%</span>
             </div>
-            <div className="h-10 w-px bg-slate-200" />
+            <div className="h-10 w-px bg-border" />
             <div className="text-left">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest font-mono block">
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest font-mono block">
                 Requirements Matched
               </span>
               <span className="text-xs font-bold text-emerald-700 font-mono">
@@ -308,26 +308,26 @@ export default function CandidateDetailPage({
             </div>
 
             {/* Trust Boundary Security Callout */}
-            <div className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50/80 p-4 text-xs text-slate-600">
-              <Lock className="h-4 w-4 text-blue-600 shrink-0 mt-0.5" />
+            <div className="flex items-start gap-3 rounded-xl border border-border bg-muted/40 p-4 text-xs text-muted-foreground">
+              <Lock className="h-4 w-4 text-primary shrink-0 mt-0.5" />
               <div>
-                <strong className="text-slate-900">Security Trust Boundary:</strong> Resume text is isolated as untrusted data. The evaluator isolates and neutralizes prompt injections without obeying them, while computing fit score strictly on authentic qualifications.
+                <strong className="text-foreground">Security Trust Boundary:</strong> Resume text is isolated as untrusted data. The evaluator isolates and neutralizes prompt injections without obeying them, while computing fit score strictly on authentic qualifications.
               </div>
             </div>
           </div>
 
           {/* SECTION 2: Role Fit Analysis */}
           <div className="minimal-card p-7 space-y-6">
-            <div className="border-b border-slate-100 pb-4 flex items-center justify-between">
+            <div className="border-b border-border pb-4 flex items-center justify-between">
               <div>
-                <h2 className="text-base font-bold text-slate-900 tracking-tight">
+                <h2 className="text-base font-bold font-heading text-foreground tracking-tight">
                   Stage 2: Objective Candidate Fit Evaluation
                 </h2>
-                <p className="text-xs text-slate-500 font-mono">
+                <p className="text-xs text-muted-foreground font-mono">
                   Computed strictly against role requirements • Decoupled from integrity flags
                 </p>
               </div>
-              <Target className="h-5 w-5 text-blue-600" />
+              <Target className="h-5 w-5 text-primary" />
             </div>
 
             {/* Radial SVG Score Gauge */}
@@ -337,12 +337,12 @@ export default function CandidateDetailPage({
 
             {/* Evaluator Commentary */}
             {score?.explanation && (
-              <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4.5">
-                <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 font-mono mb-1.5 flex items-center gap-1.5">
-                  <Sparkles className="h-3.5 w-3.5 text-blue-600" />
+              <div className="rounded-2xl border border-border bg-muted/30 p-4.5">
+                <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground font-mono mb-1.5 flex items-center gap-1.5">
+                  <Sparkles className="h-3.5 w-3.5 text-primary" />
                   Evaluator Match Commentary:
                 </div>
-                <p className="text-xs text-slate-700 leading-relaxed font-sans">
+                <p className="text-xs text-foreground leading-relaxed font-sans">
                   {score.explanation}
                 </p>
               </div>

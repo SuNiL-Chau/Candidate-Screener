@@ -29,7 +29,7 @@ export default function RootLayout({
       lang="en"
       className={cn("h-full", "antialiased", jetbrainsMono.variable, "font-sans", dmSans.variable, ralewayHeading.variable)}
     >
-      <body className="min-h-full font-sans bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white flex flex-col">
+      <body className="min-h-full font-sans bg-background text-foreground selection:bg-primary selection:text-primary-foreground flex flex-col">
         {children}
       </body>
     </html>
