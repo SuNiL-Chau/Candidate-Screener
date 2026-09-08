@@ -1,0 +1,30 @@
+Taylor Hayes
+New York, NY | taylor.hayes@example.com
+
+SUMMARY
+Principal Software Architect with over 9 years of enterprise software engineering experience across fintech and e-commerce platforms.
+
+EXPERIENCE
+
+Globex Industries — Principal Software Architect
+January 2022 – Present | New York, NY
+• Spearheaded architecture modernization from legacy monolithic services to event-driven Go and Node.js microservices.
+• Owned end-to-end technical roadmap for core transactional billing system processing $150M in annual transactions.
+• Directed a team of 14 backend and frontend software engineers across two global timezones.
+
+Acme Corporation — Lead Full Stack Engineer
+January 2021 – December 2023 | New York, NY
+• Led core platform engineering team building enterprise React and TypeScript web portals.
+• Re-architected relational database schemas in PostgreSQL to handle 5x user concurrency without degradation.
+• Authored comprehensive developer standards, code review guides, and testing harnesses.
+
+Pinnacle Tech Solutions — Software Engineer
+June 2017 – December 2020 | Boston, MA
+• Developed high-volume REST APIs and integrated message queues using RabbitMQ and Redis.
+• Optimized query performance across high-load PostgreSQL instances.
+
+EDUCATION
+B.S. in Software Engineering — Northeastern University (2013 – 2017)
+
+SKILLS
+TypeScript, Node.js, React, Go, PostgreSQL, Redis, Docker, Kubernetes, AWS, Architecture Design

@@ -1,0 +1,30 @@
+Samantha Reed
+Denver, CO | samantha.reed@example.com
+
+SUMMARY
+Staff Platform Engineer and Startup Advisor with 10 years of experience designing high-reliability distributed systems and cloud infrastructure.
+
+EXPERIENCE
+
+Summit Systems — Staff Platform Engineer (Full-Time)
+March 2021 – Present | Denver, CO
+• Architected core Kubernetes infrastructure supporting 120+ internal microservices across 3 AWS regions.
+• Implemented automated multi-region failover procedures, achieving 99.995% service availability over 24 months.
+• Established platform engineering developer portal improving team deployment self-sufficiency.
+
+Catalyst AI Labs — Technical Advisor & Consultant (Part-Time Advisory)
+January 2022 – Present | Remote
+• Served as an external technical advisor providing weekly architectural guidance on vector database scaling.
+• Advised executive leadership on technical staffing, cloud cost optimization, and SOC2 compliance milestones.
+• Authored infrastructure strategy memo that reduced preliminary cloud spend by $180,000 annually.
+
+Pioneer Data Corp — Senior DevOps Engineer
+June 2017 – February 2021 | Boulder, CO
+• Built infrastructure-as-code automation using Terraform and Ansible.
+• Managed production PostgreSQL clusters with zero-downtime replication failover.
+
+EDUCATION
+B.S. in Electrical and Computer Engineering — University of Colorado Boulder (2013 – 2017)
+
+SKILLS
+Go, Python, TypeScript, Kubernetes, AWS, Terraform, Docker, PostgreSQL, High-Availability Systems

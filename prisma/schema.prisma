@@ -1,0 +1,104 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum AnalysisStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum FindingType {
+  PROMPT_INJECTION
+  INTERNAL_INCONSISTENCY
+  TEMPLATED_INFLATION
+}
+
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+  roles     Role[]
+}
+
+model Role {
+  id           String      @id @default(cuid())
+  title        String
+  description  String
+  requirements Json
+  createdById  String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  createdBy    User        @relation(fields: [createdById], references: [id])
+  candidates   Candidate[]
+
+  @@index([createdById])
+}
+
+model Candidate {
+  id              String           @id @default(cuid())
+  roleId          String
+  name            String
+  email           String?
+  resumeText      String           @db.Text
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  role            Role             @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  integrityReport IntegrityReport?
+  score           CandidateScore?
+
+  @@index([roleId])
+}
+
+model IntegrityReport {
+  id          String             @id @default(cuid())
+  candidateId String             @unique
+  status      AnalysisStatus     @default(PENDING)
+  summary     String?
+  createdAt   DateTime           @default(now())
+  completedAt DateTime?
+  candidate   Candidate          @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  findings    IntegrityFinding[]
+}
+
+model IntegrityFinding {
+  id                String          @id @default(cuid())
+  reportId          String
+  type              FindingType
+  severity          Severity
+  title             String
+  evidence          String          @db.Text
+  explanation       String          @db.Text
+  recommendedAction String          @db.Text
+  confidence        Float
+  metadata          Json?
+  createdAt         DateTime        @default(now())
+  report            IntegrityReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  @@index([reportId])
+  @@index([type])
+}
+
+model CandidateScore {
+  id                  String    @id @default(cuid())
+  candidateId         String    @unique
+  score               Int
+  matchedRequirements Json
+  missingRequirements Json
+  explanation         String    @db.Text
+  createdAt           DateTime  @default(now())
+  candidate           Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+}

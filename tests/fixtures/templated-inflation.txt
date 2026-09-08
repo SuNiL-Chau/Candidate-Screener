@@ -1,0 +1,30 @@
+Jordan Blake
+Chicago, IL | jordan.blake@example.com
+
+SUMMARY
+Full Stack Engineer with 6 years of expertise across web applications, API engineering, and cloud infrastructure.
+
+EXPERIENCE
+
+Quantum Ventures — Senior Software Engineer
+January 2023 – Present | Chicago, IL
+• Improved deployment performance by 40% by implementing parallelized container build pipelines.
+• Reduced database query latency by 40% through index optimizations and caching layers.
+• Increased platform test coverage by 40% across all customer-facing microservices.
+
+OmniTech Solutions — Software Engineer
+March 2020 – December 2022 | Chicago, IL
+• Improved application performance by 40% across core customer reporting modules.
+• Reduced build and test turnaround time by 40% using automated test suite parallelization.
+• Increased sprint velocity by 40% by introducing automated linting and pre-commit checks.
+
+Apex Digital Labs — Junior Engineer
+July 2018 – February 2020 | Milwaukee, WI
+• Improved mobile page load speed by 40% by optimizing image bundles and code splitting.
+• Reduced support ticket escalation by 40% through automated user onboarding flows.
+
+EDUCATION
+B.S. in Computer Science — University of Illinois Urbana-Champaign (2014 – 2018)
+
+SKILLS
+TypeScript, React, Node.js, Express, PostgreSQL, Docker, AWS, Jest, CI/CD
