@@ -13,6 +13,9 @@ import {
   Sparkles,
 } from "lucide-react";
 import { IntegrityFindingData } from "@/types";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 interface EvidenceCardProps {
   finding: IntegrityFindingData;
@@ -26,13 +29,13 @@ export function EvidenceCard({ finding }: EvidenceCardProps) {
   const getSeverityStyle = (severity: string) => {
     switch (severity) {
       case "HIGH":
-        return "border-rose-200 bg-rose-50 text-rose-700";
+        return "border-destructive/30 bg-destructive/10 text-destructive";
       case "MEDIUM":
-        return "border-amber-200 bg-amber-50 text-amber-800";
+        return "border-amber-500/30 bg-amber-500/10 text-amber-700";
       case "LOW":
-        return "border-sky-200 bg-sky-50 text-sky-800";
+        return "border-primary/30 bg-primary/10 text-primary";
       default:
-        return "border-slate-200 bg-slate-100 text-slate-700";
+        return "border-border bg-muted text-muted-foreground";
     }
   };
 
@@ -40,31 +43,31 @@ export function EvidenceCard({ finding }: EvidenceCardProps) {
     switch (type) {
       case "PROMPT_INJECTION":
         return {
-          icon: <ShieldAlert className="h-4 w-4 text-rose-600" />,
+          icon: <ShieldAlert className="h-4 w-4 text-destructive" />,
           label: "Adversarial Prompt Injection Directive",
-          quoteBorder: "border-rose-500",
-          quoteBg: "bg-rose-50/50 text-slate-800",
+          quoteBorder: "border-destructive",
+          quoteBg: "bg-destructive/5 text-foreground",
         };
       case "INTERNAL_INCONSISTENCY":
         return {
           icon: <CalendarClock className="h-4 w-4 text-amber-600" />,
           label: "Employment Timeline Inconsistency",
           quoteBorder: "border-amber-500",
-          quoteBg: "bg-amber-50/50 text-slate-800",
+          quoteBg: "bg-amber-500/5 text-foreground",
         };
       case "TEMPLATED_INFLATION":
         return {
-          icon: <Copy className="h-4 w-4 text-sky-600" />,
+          icon: <Copy className="h-4 w-4 text-primary" />,
           label: "Formulaic Templated Achievement Claim",
-          quoteBorder: "border-sky-500",
-          quoteBg: "bg-sky-50/50 text-slate-800",
+          quoteBorder: "border-primary",
+          quoteBg: "bg-primary/5 text-foreground",
         };
       default:
         return {
-          icon: <HelpCircle className="h-4 w-4 text-slate-600" />,
+          icon: <HelpCircle className="h-4 w-4 text-muted-foreground" />,
           label: type,
-          quoteBorder: "border-blue-500",
-          quoteBg: "bg-slate-50 text-slate-800",
+          quoteBorder: "border-primary",
+          quoteBg: "bg-muted/40 text-foreground",
         };
     }
   };
@@ -84,53 +87,56 @@ export function EvidenceCard({ finding }: EvidenceCardProps) {
   };
 
   return (
-    <div
-      className={`rounded-2xl border border-slate-200 bg-white p-5 shadow-xs transition-all duration-200 hover:border-slate-300 hover:shadow-sm ${
+    <Card
+      className={`p-5 transition-all duration-200 hover:shadow-sm ${
         verifiedByHuman ? "opacity-75" : ""
       }`}
     >
       {/* Top Header Strip */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
         <div className="flex items-center gap-2">
           {theme.icon}
-          <span className="text-xs font-bold tracking-wider uppercase text-slate-700 font-mono">
+          <span className="text-xs font-bold tracking-wider uppercase text-foreground font-heading">
             {theme.label}
           </span>
         </div>
 
         <div className="flex items-center gap-2">
-          <span
-            className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${getSeverityStyle(
+          <Badge
+            variant="outline"
+            className={`text-[10px] font-bold uppercase tracking-wider ${getSeverityStyle(
               finding.severity
             )}`}
           >
             {finding.severity} Severity
-          </span>
-          <span className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-mono font-medium text-slate-600">
+          </Badge>
+          <Badge variant="secondary" className="text-[10px] font-mono font-medium">
             {Math.round(finding.confidence * 100)}% Conf
-          </span>
+          </Badge>
         </div>
       </div>
 
       {/* Finding Title */}
       <div className="mt-3">
-        <h4 className="text-sm font-bold text-slate-900 tracking-tight">{finding.title}</h4>
+        <h4 className="text-sm font-bold font-heading text-foreground tracking-tight">{finding.title}</h4>
       </div>
 
       {/* Quoted Resume Evidence Box */}
-      <div className="mt-3 rounded-xl border border-slate-200/80 bg-slate-50/70 p-3.5">
-        <div className="flex items-center justify-between text-[10px] font-mono font-bold tracking-wider text-slate-500 uppercase mb-1.5">
-          <span className="flex items-center gap-1.5 text-blue-600">
+      <div className="mt-3 rounded-xl border border-border bg-muted/40 p-3.5">
+        <div className="flex items-center justify-between text-[10px] font-mono font-bold tracking-wider text-muted-foreground uppercase mb-1.5">
+          <span className="flex items-center gap-1.5 text-primary">
             <MessageSquareQuote className="h-3.5 w-3.5" />
             Untrusted Resume Excerpt (Quarantined)
           </span>
-          <button
+          <Button
+            variant="outline"
+            size="sm"
             onClick={handleCopyEvidence}
-            className="flex items-center gap-1 rounded border border-slate-200 bg-white px-2 py-0.5 text-[10px] font-sans font-medium text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
+            className="h-6 px-2 text-[10px] gap-1 font-sans"
           >
-            {copiedEvidence ? <Check className="h-3 w-3 text-emerald-600" /> : <Copy className="h-3 w-3 text-slate-400" />}
+            {copiedEvidence ? <Check className="h-3 w-3 text-primary" /> : <Copy className="h-3 w-3 text-muted-foreground" />}
             <span>{copiedEvidence ? "Copied" : "Copy Excerpt"}</span>
-          </button>
+          </Button>
         </div>
 
         <blockquote
@@ -141,42 +147,44 @@ export function EvidenceCard({ finding }: EvidenceCardProps) {
       </div>
 
       {/* Detection Analysis Rationale */}
-      <div className="mt-3.5 space-y-2.5 text-xs">
-        <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-3">
-          <span className="font-bold text-slate-800">Analysis: </span>
-          <span className="text-slate-600 leading-relaxed">{finding.explanation}</span>
+      <div className="mt-3.5 space-y-2.5 text-xs font-sans">
+        <div className="rounded-xl border border-border bg-muted/30 p-3">
+          <span className="font-bold text-foreground font-heading">Analysis: </span>
+          <span className="text-muted-foreground leading-relaxed font-sans">{finding.explanation}</span>
         </div>
 
         {/* Recruiter Strategy & Verification Question */}
-        <div className="rounded-xl border border-blue-100 bg-blue-50/60 p-3.5">
+        <div className="rounded-xl border border-primary/20 bg-primary/5 p-3.5">
           <div className="flex items-center justify-between mb-1.5">
-            <span className="flex items-center gap-1.5 text-[11px] font-bold text-blue-900 tracking-wide uppercase">
-              <Sparkles className="h-3.5 w-3.5 text-blue-600" />
+            <span className="flex items-center gap-1.5 text-[11px] font-bold text-foreground tracking-wide uppercase font-heading">
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
               Recruiter Action & Recommended Verification Question
             </span>
-            <button
+            <Button
+              variant="outline"
+              size="sm"
               onClick={handleCopyQuestion}
-              className="flex items-center gap-1 rounded bg-white border border-blue-200 px-2 py-0.5 text-[10px] font-medium text-blue-800 hover:bg-blue-100/50 transition-colors cursor-pointer"
+              className="h-6 px-2 text-[10px] gap-1 font-sans border-primary/30 text-primary hover:bg-primary/10"
             >
-              {copiedQuestion ? <Check className="h-3 w-3 text-emerald-600" /> : <Copy className="h-3 w-3 text-blue-600" />}
-              <span>{copiedQuestion ? "Copied Question" : "Copy Question"}</span>
-            </button>
+              {copiedQuestion ? <Check className="h-3 w-3 text-primary" /> : <Copy className="h-3 w-3 text-primary" />}
+              <span>{copiedQuestion ? "Copied" : "Copy Question"}</span>
+            </Button>
           </div>
-          <p className="text-xs text-blue-800 leading-relaxed">{finding.recommendedAction}</p>
+          <p className="text-xs text-foreground leading-relaxed font-sans">{finding.recommendedAction}</p>
         </div>
       </div>
 
       {/* Human Recruiter Verification Checkbox */}
-      <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3">
+      <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
         <button
           type="button"
           onClick={() => setVerifiedByHuman(!verifiedByHuman)}
-          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
         >
           {verifiedByHuman ? (
-            <CheckSquare className="h-4 w-4 text-emerald-600" />
+            <CheckSquare className="h-4 w-4 text-primary" />
           ) : (
-            <Square className="h-4 w-4 text-slate-400" />
+            <Square className="h-4 w-4 text-muted-foreground" />
           )}
           <span>
             {verifiedByHuman ? "Marked as verified by human reviewer" : "Mark as verified during candidate interview"}
@@ -184,11 +192,11 @@ export function EvidenceCard({ finding }: EvidenceCardProps) {
         </button>
 
         {verifiedByHuman && (
-          <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
+          <Badge variant="secondary" className="bg-primary/10 text-primary border border-primary/20 text-[10px]">
             Verified by Human
-          </span>
+          </Badge>
         )}
       </div>
-    </div>
+    </Card>
   );
 }

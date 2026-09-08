@@ -105,6 +105,32 @@ export function Sidebar() {
             Pre-score prompt injection defense & timeline validation enabled.
           </p>
         </div>
+
+        {/* Active Preset Configuration (Nova b23Ntvaags) */}
+        <div className="rounded-2xl border border-sidebar-border bg-sidebar-accent/30 p-3.5 space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest font-mono">
+              Style Preset
+            </span>
+            <span className="rounded-md border border-primary/30 bg-primary/10 px-1.5 py-0.5 text-[10px] font-bold text-primary font-mono">
+              b23Ntvaags
+            </span>
+          </div>
+          <div className="space-y-1 text-[11px] text-muted-foreground font-mono">
+            <div className="flex justify-between items-center">
+              <span>Style / Base:</span>
+              <span className="font-semibold text-sidebar-foreground">Nova / Taupe</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span>Theme:</span>
+              <span className="font-semibold text-primary">Teal</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span>Typography:</span>
+              <span className="font-semibold text-sidebar-foreground">Raleway / DM Sans</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Recruiter Profile & Sign Out (Bottom) */}
