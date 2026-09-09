@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   X,
   Loader2,
@@ -8,6 +8,12 @@ import {
   UserPlus,
   ShieldCheck,
   CheckCircle2,
+  UploadCloud,
+  Globe,
+  FileText,
+  FileCheck,
+  AlertCircle,
+  RefreshCw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -178,19 +184,29 @@ Go, Python, TypeScript, Kubernetes, AWS, Terraform, PostgreSQL, System Architect
   },
 ];
 
+type IntakeTab = "upload" | "scrape" | "presets";
+
 export function AddCandidateModal({
   roleId,
   isOpen,
   onClose,
   onAdded,
 }: AddCandidateModalProps) {
+  const [activeTab, setActiveTab] = useState<IntakeTab>("upload");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [resumeText, setResumeText] = useState("");
+  const [scrapeUrl, setScrapeUrl] = useState("");
   const [autoAnalyze, setAutoAnalyze] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isParsing, setIsParsing] = useState(false);
+  const [parseStatusMessage, setParseStatusMessage] = useState("");
+  const [parseSuccessBadge, setParseSuccessBadge] = useState<string | null>(null);
   const [pipelineStage, setPipelineStage] = useState<number>(0);
   const [error, setError] = useState("");
+  const [isDragging, setIsDragging] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
 
@@ -198,6 +214,113 @@ export function AddCandidateModal({
     setName(preset.name);
     setEmail(preset.email);
     setResumeText(preset.text);
+    setParseSuccessBadge(`Demo preset loaded: ${preset.name}`);
+    setError("");
+  };
+
+  const handleFileUpload = async (file: File) => {
+    setError("");
+    setParseSuccessBadge(null);
+    setIsParsing(true);
+    setParseStatusMessage(`Extracting text from ${file.name}...`);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/candidates/parse-resume", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to parse file.");
+      }
+
+      setResumeText(data.resumeText || "");
+      if (data.name && !name) {
+        setName(data.name);
+      }
+      if (data.email && !email) {
+        setEmail(data.email);
+      }
+
+      setParseSuccessBadge(`Extracted from ${file.name} (${data.wordCount} words)`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to extract file contents");
+    } finally {
+      setIsParsing(false);
+      setParseStatusMessage("");
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleFileUpload(file);
+    }
+    // reset value so same file can be re-selected if desired
+    e.target.value = "";
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      handleFileUpload(file);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleScrapeUrl = async () => {
+    if (!scrapeUrl.trim()) {
+      setError("Please enter a web URL to scrape.");
+      return;
+    }
+
+    setError("");
+    setParseSuccessBadge(null);
+    setIsParsing(true);
+    setParseStatusMessage("Scraping and cleaning resume content from URL...");
+
+    try {
+      const res = await fetch("/api/candidates/parse-resume", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: scrapeUrl.trim() }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to scrape URL.");
+      }
+
+      setResumeText(data.resumeText || "");
+      if (data.name && !name) {
+        setName(data.name);
+      }
+      if (data.email && !email) {
+        setEmail(data.email);
+      }
+
+      setParseSuccessBadge(`Scraped from ${new URL(scrapeUrl).hostname} (${data.wordCount} words)`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to scrape web URL");
+    } finally {
+      setIsParsing(false);
+      setParseStatusMessage("");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -253,7 +376,7 @@ export function AddCandidateModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 overflow-y-auto animate-in fade-in duration-200">
-      <div className="w-full max-w-3xl rounded-xl border border-border bg-card p-6 sm:p-7 shadow-xl animate-in zoom-in-95 duration-150 my-6">
+      <div className="w-full max-w-3xl max-h-[100svh] overflow-y-auto rounded-2xl border-0 ring-0 bg-card p-6 sm:p-8 shadow-2xl animate-in zoom-in-95 duration-150 my-auto">
         {/* Modal Header */}
         <div className="flex items-center justify-between border-b border-border pb-4">
           <div className="flex items-center gap-3">
@@ -261,55 +384,210 @@ export function AddCandidateModal({
               <UserPlus className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold font-heading text-foreground tracking-tight">Add Candidate for Screening</h3>
-              <p className="text-xs text-muted-foreground font-sans">Intake candidate resume and execute pre-score integrity pipeline</p>
+              <h3 className="text-base font-bold font-heading text-foreground tracking-tight">
+                Add Candidate for Screening
+              </h3>
+              <p className="text-xs text-muted-foreground font-sans">
+                Upload resume file, scrape from web URL, or paste text to execute integrity pipeline
+              </p>
             </div>
           </div>
           <Button
             variant="ghost"
             size="icon"
             onClick={onClose}
-            className="h-8 w-8 text-muted-foreground hover:text-foreground"
+            className="h-8 w-8 text-muted-foreground hover:text-foreground cursor-pointer"
           >
             <X className="h-4 w-4" />
           </Button>
         </div>
 
-        {/* 1-Click Test Fixtures Bar */}
-        <div className="mt-5 rounded-xl border border-border bg-muted/40 p-4">
-          <div className="flex items-center justify-between mb-2.5">
-            <span className="flex items-center gap-1.5 text-xs font-bold text-foreground uppercase tracking-wide font-sans">
-              <Sparkles className="h-3.5 w-3.5 text-primary" />
-              1-Click Demo & Adversarial Fixtures:
-            </span>
-            <span className="text-[11px] text-muted-foreground font-mono">Load sample profile</span>
+        {/* Intake Source Switcher */}
+        <div className="mt-5">
+          <div className="flex rounded-xl bg-muted/60 p-1 gap-1">
+            <button
+              type="button"
+              onClick={() => setActiveTab("upload")}
+              className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+                activeTab === "upload"
+                  ? "bg-card text-foreground shadow-xs"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <UploadCloud className="h-3.5 w-3.5" />
+              <span>Upload Resume File</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("scrape")}
+              className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+                activeTab === "scrape"
+                  ? "bg-card text-foreground shadow-xs"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Globe className="h-3.5 w-3.5" />
+              <span>Scrape Web Resume URL</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("presets")}
+              className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+                activeTab === "presets"
+                  ? "bg-card text-foreground shadow-xs"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              <span>1-Click Demo Profiles</span>
+            </button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-            {SAMPLE_PRESETS.map((p, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => loadPreset(p)}
-                className="flex flex-col items-start rounded-lg border border-border bg-card p-2.5 text-left hover:border-primary/40 hover:bg-primary/10 transition-all cursor-pointer shadow-2xs font-sans"
+
+          {/* TAB 1: File Upload Dropzone */}
+          {activeTab === "upload" && (
+            <div className="mt-3">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,text/markdown"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+
+              <div
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onClick={() => fileInputRef.current?.click()}
+                className={`flex flex-col items-center justify-center rounded-xl border-2 border-dashed p-6 text-center cursor-pointer transition-all ${
+                  isDragging
+                    ? "border-primary bg-primary/10 scale-[0.99]"
+                    : "border-border hover:border-primary/40 bg-muted/20 hover:bg-muted/40"
+                }`}
               >
-                <div className="flex items-center justify-between w-full">
-                  <span className="text-xs font-bold text-foreground font-heading">{p.name}</span>
-                  <Badge
-                    variant={p.badgeVariant}
-                    className={`text-[9px] font-bold uppercase tracking-wider ${p.badgeClass}`}
+                {isParsing ? (
+                  <div className="flex flex-col items-center gap-2 py-2">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    <p className="text-xs font-semibold text-foreground">{parseStatusMessage}</p>
+                    <p className="text-[11px] text-muted-foreground">Extracting text & candidate contact details...</p>
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary mb-2 shadow-2xs">
+                      <UploadCloud className="h-5 w-5" />
+                    </div>
+                    <p className="text-xs font-bold text-foreground">
+                      Click to browse or drag and drop candidate resume
+                    </p>
+                    <p className="mt-1 text-[11px] text-muted-foreground">
+                      Supports PDF (.pdf), Word (.docx), and Text (.txt, .md) up to 10MB
+                    </p>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* TAB 2: Scrape Resume from URL */}
+          {activeTab === "scrape" && (
+            <div className="mt-3 rounded-xl border border-border bg-muted/20 p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Globe className="h-4 w-4 text-primary" />
+                <span className="text-xs font-bold text-foreground">
+                  Scrape Resume Content from Web Link
+                </span>
+              </div>
+              <p className="text-[11px] text-muted-foreground mb-3">
+                Provide a public portfolio, online CV, or web resume URL to automatically fetch and parse into screening text.
+              </p>
+              <div className="flex gap-2">
+                <Input
+                  type="url"
+                  placeholder="https://example.com/jane-doe-resume"
+                  value={scrapeUrl}
+                  onChange={(e) => setScrapeUrl(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleScrapeUrl();
+                    }
+                  }}
+                  className="h-9 text-xs"
+                />
+                <Button
+                  type="button"
+                  onClick={handleScrapeUrl}
+                  disabled={isParsing || !scrapeUrl.trim()}
+                  className="h-9 px-4 text-xs font-semibold shrink-0 cursor-pointer shadow-xs gap-1.5"
+                >
+                  {isParsing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
+                  <span>{isParsing ? "Scraping..." : "Scrape Resume"}</span>
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 3: 1-Click Demo Profiles */}
+          {activeTab === "presets" && (
+            <div className="mt-3 rounded-xl border border-border bg-muted/20 p-3.5">
+              <div className="flex items-center justify-between mb-2">
+                <span className="flex items-center gap-1.5 text-xs font-bold text-foreground uppercase tracking-wide font-sans">
+                  <Sparkles className="h-3.5 w-3.5 text-primary" />
+                  Pre-configured Test Profiles:
+                </span>
+                <span className="text-[11px] text-muted-foreground font-mono">1-click populate</span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                {SAMPLE_PRESETS.map((p, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => loadPreset(p)}
+                    className="flex flex-col items-start rounded-lg border border-border bg-card p-2.5 text-left hover:border-primary/40 hover:bg-primary/10 transition-all cursor-pointer shadow-2xs font-sans"
                   >
-                    {p.badge}
-                  </Badge>
-                </div>
-                <p className="mt-1 text-[11px] text-muted-foreground line-clamp-1">{p.desc}</p>
-              </button>
-            ))}
-          </div>
+                    <div className="flex items-center justify-between w-full">
+                      <span className="text-xs font-bold text-foreground font-heading">{p.name}</span>
+                      <Badge
+                        variant={p.badgeVariant}
+                        className={`text-[9px] font-bold uppercase tracking-wider ${p.badgeClass}`}
+                      >
+                        {p.badge}
+                      </Badge>
+                    </div>
+                    <p className="mt-1 text-[11px] text-muted-foreground line-clamp-1">{p.desc}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
+        {/* Success Banner if parsed */}
+        {parseSuccessBadge && (
+          <div className="mt-4 flex items-center justify-between rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-3.5 py-2 text-xs font-medium text-emerald-800 animate-in fade-in duration-200">
+            <div className="flex items-center gap-2">
+              <FileCheck className="h-4 w-4 text-emerald-600" />
+              <span>{parseSuccessBadge}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setParseSuccessBadge(null);
+                setResumeText("");
+                setName("");
+                setEmail("");
+              }}
+              className="text-[11px] text-emerald-700 hover:text-emerald-900 underline cursor-pointer font-sans"
+            >
+              Clear
+            </button>
+          </div>
+        )}
+
         {error && (
-          <div className="mt-4 rounded-xl bg-destructive/10 border border-destructive/20 p-3 text-xs font-semibold text-destructive font-sans">
-            {error}
+          <div className="mt-4 flex items-center gap-2 rounded-xl bg-destructive/10 border border-destructive/20 p-3 text-xs font-semibold text-destructive font-sans">
+            <AlertCircle className="h-4 w-4 shrink-0" />
+            <span>{error}</span>
           </div>
         )}
 
@@ -346,15 +624,15 @@ export function AddCandidateModal({
           <div>
             <div className="flex items-center justify-between mb-1.5">
               <label className="block text-xs font-bold text-foreground uppercase tracking-wider font-sans">
-                Resume Plain Text (Untrusted Input Payload)
+                Resume Text Payload (Quarantined & Screened)
               </label>
               <span className="text-[11px] font-mono text-muted-foreground">
                 {wordCount} words • Untrusted Data Isolation
               </span>
             </div>
             <Textarea
-              rows={8}
-              placeholder="Paste candidate resume content here..."
+              rows={7}
+              placeholder="Paste candidate resume content here, or upload a PDF / DOCX file above..."
               value={resumeText}
               onChange={(e) => setResumeText(e.target.value)}
               className="font-mono text-xs leading-relaxed"
@@ -394,12 +672,24 @@ export function AddCandidateModal({
                 <span>Executing Automated Screening Pipeline</span>
               </div>
               <div className="space-y-1 pl-6 text-xs font-sans">
-                <div className={`flex items-center gap-2 ${pipelineStage >= 1 ? "text-primary font-semibold" : "text-muted-foreground"}`}>
+                <div
+                  className={`flex items-center gap-2 ${
+                    pipelineStage >= 1 ? "text-primary font-semibold" : "text-muted-foreground"
+                  }`}
+                >
                   <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
                   <span>Stage 1: Quarantining Untrusted Resume & Inspecting Integrity Signals...</span>
                 </div>
-                <div className={`flex items-center gap-2 ${pipelineStage >= 2 ? "text-primary font-semibold" : "text-muted-foreground"}`}>
-                  {pipelineStage >= 2 ? <CheckCircle2 className="h-3.5 w-3.5 text-primary" /> : <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />}
+                <div
+                  className={`flex items-center gap-2 ${
+                    pipelineStage >= 2 ? "text-primary font-semibold" : "text-muted-foreground"
+                  }`}
+                >
+                  {pipelineStage >= 2 ? (
+                    <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
+                  ) : (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+                  )}
                   <span>Stage 2: Evaluating Candidate Fit Against Stated Role Requirements...</span>
                 </div>
               </div>
@@ -411,14 +701,14 @@ export function AddCandidateModal({
               type="button"
               variant="outline"
               onClick={onClose}
-              className="text-muted-foreground"
+              className="text-muted-foreground cursor-pointer"
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              disabled={isSubmitting}
-              className="gap-2 font-semibold"
+              disabled={isSubmitting || isParsing}
+              className="gap-2 font-semibold shadow-xs cursor-pointer"
             >
               {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
               {isSubmitting ? "Processing Pipeline..." : "Intake & Screen Candidate"}

@@ -40,6 +40,7 @@ export interface RoleData {
   title: string;
   description: string;
   requirements: string[];
+  status?: "OPEN" | "CLOSED";
   createdById: string;
   createdAt: Date | string;
   updatedAt: Date | string;

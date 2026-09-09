@@ -28,6 +28,7 @@ export async function listRoles(userId: string): Promise<RoleData[]> {
       title: r.title,
       description: r.description,
       requirements: (r.requirements as string[]) || [],
+      status: (r.status as "OPEN" | "CLOSED") || "OPEN",
       createdById: r.createdById,
       createdAt: r.createdAt.toISOString(),
       updatedAt: r.updatedAt.toISOString(),
@@ -65,6 +66,7 @@ export async function getRoleById(roleId: string) {
   return {
     ...role,
     requirements: (role.requirements as string[]) || [],
+    status: (role.status as "OPEN" | "CLOSED") || "OPEN",
     createdAt: role.createdAt.toISOString(),
     updatedAt: role.updatedAt.toISOString(),
     candidates: role.candidates.map((c) => ({
@@ -88,6 +90,16 @@ export async function createRole(data: {
       requirements: data.requirements.filter(Boolean),
       createdById: data.createdById,
     },
+  });
+}
+
+export async function updateRoleStatus(
+  roleId: string,
+  status: "OPEN" | "CLOSED"
+) {
+  return await prisma.role.update({
+    where: { id: roleId },
+    data: { status },
   });
 }
 

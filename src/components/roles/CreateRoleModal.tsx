@@ -96,8 +96,8 @@ export function CreateRoleModal({ isOpen, onClose, onCreated }: CreateRoleModalP
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 animate-in fade-in duration-200">
-      <div className="w-full max-w-xl rounded-xl border border-border bg-card p-6 sm:p-7 shadow-xl animate-in zoom-in-95 duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 overflow-y-auto animate-in fade-in duration-200">
+      <div className="w-full max-w-xl max-h-[100svh] overflow-y-auto rounded-xl border border-border bg-card p-6 sm:p-7 shadow-xl animate-in zoom-in-95 duration-150 my-auto">
         <div className="flex items-center justify-between border-b border-border pb-4">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">

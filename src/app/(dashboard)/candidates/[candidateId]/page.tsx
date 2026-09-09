@@ -148,13 +148,12 @@ export default function CandidateDetailPage({
 
         <div className="flex items-center gap-2.5">
           <Button
-            variant="outline"
             size="sm"
             onClick={handleReanalyze}
             disabled={analyzing}
-            className="gap-2 font-semibold"
+            className="gap-2 font-semibold shadow-xs cursor-pointer"
           >
-            <RefreshCw className={`h-3.5 w-3.5 ${analyzing ? "animate-spin text-primary" : ""}`} />
+            <RefreshCw className={`h-3.5 w-3.5 ${analyzing ? "animate-spin" : ""}`} />
             <span>{analyzing ? "Auditing Pipeline..." : "Re-run Automated Audit"}</span>
           </Button>
           <Button
@@ -171,7 +170,7 @@ export default function CandidateDetailPage({
       </div>
 
       {/* Candidate Profile Header Card */}
-      <Card className="p-6">
+      <Card className="p-7 sm:p-8 shadow-xs border-0 ring-0">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
           <div className="flex items-center gap-4">
             <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-primary text-xl font-black text-primary-foreground shadow-xs">
@@ -229,7 +228,7 @@ export default function CandidateDetailPage({
         {/* Left Column: Integrity & Fit Evaluation (7 cols) */}
         <div className="lg:col-span-7 space-y-6">
           {/* SECTION 1: Pre-Scoring Integrity Audit Report */}
-          <Card className="p-6 space-y-5">
+          <Card className="p-7 sm:p-8 space-y-6 shadow-xs border-0 ring-0">
             <div className="flex items-center justify-between border-b border-border pb-4">
               <div className="flex items-center gap-3">
                 {hasPromptInjection ? (
@@ -318,7 +317,7 @@ export default function CandidateDetailPage({
           </Card>
 
           {/* SECTION 2: Role Fit Analysis */}
-          <Card className="p-6 space-y-6">
+          <Card className="p-7 sm:p-8 space-y-6 shadow-xs border-0 ring-0">
             <div className="border-b border-border pb-4 flex items-center justify-between">
               <div>
                 <h2 className="text-base font-bold font-heading text-foreground tracking-tight">
@@ -398,7 +397,7 @@ export default function CandidateDetailPage({
 
         {/* Right Column: Untrusted Resume Viewer (5 cols) */}
         <div className="lg:col-span-5 sticky top-8">
-          <Card className="p-6">
+          <Card className="p-7 sm:p-8 shadow-xs border-0 ring-0">
             <div className="flex items-center justify-between border-b border-border pb-3.5">
               <div className="flex items-center gap-2">
                 <FileText className="h-4 w-4 text-muted-foreground" />

@@ -27,6 +27,11 @@ enum Severity {
   HIGH
 }
 
+enum RoleStatus {
+  OPEN
+  CLOSED
+}
+
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
@@ -39,6 +44,7 @@ model Role {
   title        String
   description  String
   requirements Json
+  status       RoleStatus  @default(OPEN)
   createdById  String
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt

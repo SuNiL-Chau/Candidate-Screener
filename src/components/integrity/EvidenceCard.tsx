@@ -88,7 +88,7 @@ export function EvidenceCard({ finding }: EvidenceCardProps) {
 
   return (
     <Card
-      className={`p-5 transition-all duration-200 hover:shadow-sm ${
+      className={`p-6 sm:p-7 transition-all duration-200 shadow-xs hover:shadow-sm border-0 ring-0 ${
         verifiedByHuman ? "opacity-75" : ""
       }`}
     >
@@ -161,12 +161,11 @@ export function EvidenceCard({ finding }: EvidenceCardProps) {
               Recruiter Action & Recommended Verification Question
             </span>
             <Button
-              variant="outline"
               size="sm"
               onClick={handleCopyQuestion}
-              className="h-6 px-2 text-[10px] gap-1 font-sans border-primary/30 text-primary hover:bg-primary/10"
+              className="h-6.5 px-2.5 text-[10px] gap-1 font-sans shadow-xs cursor-pointer"
             >
-              {copiedQuestion ? <Check className="h-3 w-3 text-primary" /> : <Copy className="h-3 w-3 text-primary" />}
+              {copiedQuestion ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
               <span>{copiedQuestion ? "Copied" : "Copy Question"}</span>
             </Button>
           </div>
