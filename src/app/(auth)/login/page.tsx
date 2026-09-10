@@ -46,6 +46,7 @@ export default function LoginPage() {
     }
   };
 
+  // Default pass
   const fillDemoCredentials = () => {
     setEmail("recruiter@crystalgroup.com");
     setPassword("hr@crystalGroup@26");
