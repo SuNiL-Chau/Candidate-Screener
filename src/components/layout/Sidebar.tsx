@@ -15,9 +15,10 @@ import {
 interface SidebarProps {
   mobileOpen?: boolean;
   onMobileClose?: () => void;
+  userEmail?: string;
 }
 
-export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
+export function Sidebar({ mobileOpen = false, onMobileClose, userEmail = "recruiter@crystalgroup.com" }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -117,15 +118,15 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
       <div className="p-4 border-t border-sidebar-border font-sans shrink-0">
         <div className="flex items-center justify-between rounded-xl p-2.5 bg-sidebar-accent/40 border border-sidebar-border/80">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground shadow-xs">
-              CR
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground shadow-xs uppercase">
+              {userEmail.slice(0, 2)}
             </div>
             <div className="truncate">
               <div className="text-xs font-bold text-sidebar-foreground truncate font-heading">
                 Crystal Recruiter
               </div>
               <div className="text-[11px] text-muted-foreground font-mono truncate">
-                recruiter@crystalgroup.com
+                {userEmail}
               </div>
             </div>
           </div>

@@ -57,8 +57,8 @@ export async function getCurrentUser(): Promise<AppUser | null> {
       }
     }
 
-    // Default recruiter session for seamless first-load experience if configured
-    return await getOrCreateDefaultUser();
+    // No valid session cookie found; user is not authenticated
+    return null;
   } catch (error) {
     console.error("Error checking session:", error);
     return null;
