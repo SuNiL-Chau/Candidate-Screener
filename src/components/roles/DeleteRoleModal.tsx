@@ -51,10 +51,16 @@ export function DeleteRoleModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4 overflow-y-auto animate-in fade-in duration-200">
-      <div className="w-full max-w-md max-h-[92dvh] overflow-y-auto rounded-2xl border-0 ring-0 bg-card p-5 sm:p-6 shadow-2xl animate-in zoom-in-95 duration-150 my-auto">
-        <div className="flex items-start justify-between">
-          <div className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl bg-destructive/10 text-destructive shrink-0">
-            <Trash2 className="h-5 w-5" />
+      <div className="w-full max-w-md max-h-[92dvh] flex flex-col rounded-2xl border border-border bg-card shadow-2xl overflow-hidden my-auto">
+        {/* Sticky Header */}
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-card px-4 py-3.5 sm:px-6 sm:py-4 shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-destructive/10 text-destructive shrink-0">
+              <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />
+            </div>
+            <h3 className="text-sm sm:text-base font-bold font-heading text-foreground tracking-tight">
+              Delete Position?
+            </h3>
           </div>
           <Button
             variant="ghost"
@@ -66,32 +72,31 @@ export function DeleteRoleModal({
           </Button>
         </div>
 
-        <div className="mt-4">
-          <h3 className="text-base sm:text-lg font-bold font-heading text-foreground tracking-tight">
-            Delete Position?
-          </h3>
-          <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
+        {/* Scrollable Body */}
+        <div className="flex-1 overflow-y-auto px-4 py-4 sm:px-6 sm:py-5 space-y-4 font-sans">
+          <p className="text-xs text-muted-foreground leading-relaxed">
             Are you sure you want to permanently delete{" "}
             <strong className="text-foreground font-semibold">"{role.title}"</strong>?
           </p>
+
+          <div className="rounded-xl border border-destructive/20 bg-destructive/5 p-3.5 flex items-start gap-2.5 text-xs text-destructive">
+            <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
+            <div className="font-sans leading-relaxed">
+              This will permanently remove this position and all{" "}
+              <strong className="font-bold">{role.candidateCount ?? 0} candidate profiles</strong>,
+              pre-score integrity audits, and evaluation rankings. This action cannot be reversed.
+            </div>
+          </div>
+
+          {error && (
+            <div className="rounded-lg bg-destructive/10 p-2.5 text-xs text-destructive font-medium">
+              {error}
+            </div>
+          )}
         </div>
 
-        <div className="mt-4 rounded-xl border border-destructive/20 bg-destructive/5 p-3.5 flex items-start gap-2.5 text-xs text-destructive">
-          <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
-          <div className="font-sans leading-relaxed">
-            This will permanently remove this position and all{" "}
-            <strong className="font-bold">{role.candidateCount ?? 0} candidate profiles</strong>,
-            pre-score integrity audits, and evaluation rankings. This action cannot be reversed.
-          </div>
-        </div>
-
-        {error && (
-          <div className="mt-3 rounded-lg bg-destructive/10 p-2.5 text-xs text-destructive font-medium">
-            {error}
-          </div>
-        )}
-
-        <div className="mt-6 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-2.5 border-t border-border pt-4">
+        {/* Sticky Footer */}
+        <div className="sticky bottom-0 z-10 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-2.5 border-t border-border bg-card px-4 py-3 sm:px-6 sm:py-4 shrink-0">
           <Button
             type="button"
             variant="outline"
