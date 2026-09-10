@@ -50,10 +50,10 @@ export function DeleteRoleModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 overflow-y-auto animate-in fade-in duration-200">
-      <div className="w-full max-w-md max-h-[100svh] overflow-y-auto rounded-2xl border-0 ring-0 bg-card p-6 shadow-2xl animate-in zoom-in-95 duration-150 my-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4 overflow-y-auto animate-in fade-in duration-200">
+      <div className="w-full max-w-md max-h-[92dvh] overflow-y-auto rounded-2xl border-0 ring-0 bg-card p-5 sm:p-6 shadow-2xl animate-in zoom-in-95 duration-150 my-auto">
         <div className="flex items-start justify-between">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-destructive/10 text-destructive">
+          <div className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl bg-destructive/10 text-destructive shrink-0">
             <Trash2 className="h-5 w-5" />
           </div>
           <Button
@@ -67,7 +67,7 @@ export function DeleteRoleModal({
         </div>
 
         <div className="mt-4">
-          <h3 className="text-lg font-bold font-heading text-foreground tracking-tight">
+          <h3 className="text-base sm:text-lg font-bold font-heading text-foreground tracking-tight">
             Delete Position?
           </h3>
           <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
@@ -91,13 +91,13 @@ export function DeleteRoleModal({
           </div>
         )}
 
-        <div className="mt-6 flex justify-end gap-2.5 border-t border-border pt-4">
+        <div className="mt-6 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-2.5 border-t border-border pt-4">
           <Button
             type="button"
             variant="outline"
             onClick={onClose}
             disabled={isDeleting}
-            className="text-muted-foreground cursor-pointer"
+            className="text-muted-foreground cursor-pointer w-full sm:w-auto"
           >
             Cancel
           </Button>
@@ -106,7 +106,7 @@ export function DeleteRoleModal({
             variant="destructive"
             onClick={handleDelete}
             disabled={isDeleting}
-            className="gap-2 font-semibold shadow-xs cursor-pointer"
+            className="gap-2 font-semibold shadow-xs cursor-pointer w-full sm:w-auto"
           >
             {isDeleting && <Loader2 className="h-4 w-4 animate-spin" />}
             <span>{isDeleting ? "Deleting Position..." : "Delete Permanently"}</span>

@@ -8,9 +8,15 @@ import {
   Briefcase,
   LogOut,
   ChevronRight,
+  X,
 } from "lucide-react";
 
-export function Sidebar() {
+interface SidebarProps {
+  mobileOpen?: boolean;
+  onMobileClose?: () => void;
+}
+
+export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -33,11 +39,17 @@ export function Sidebar() {
     },
   ];
 
-  return (
-    <aside className="fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-xs">
+  const renderContent = (isMobile = false) => (
+    <>
       {/* Brand Logo & Header */}
-      <div className="flex h-16 items-center px-6 border-b border-sidebar-border">
-        <Link href="/dashboard" className="flex items-center gap-3 group">
+      <div className="flex h-16 items-center justify-between px-6 border-b border-sidebar-border shrink-0">
+        <Link
+          href="/dashboard"
+          onClick={() => {
+            if (isMobile && onMobileClose) onMobileClose();
+          }}
+          className="flex items-center gap-3 group"
+        >
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-xs group-hover:scale-105 transition-transform">
             <ShieldCheck className="h-5 w-5" />
           </div>
@@ -50,6 +62,17 @@ export function Sidebar() {
             </p>
           </div>
         </Link>
+
+        {isMobile && onMobileClose && (
+          <button
+            type="button"
+            onClick={onMobileClose}
+            className="rounded-lg p-1.5 text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors cursor-pointer"
+            aria-label="Close Sidebar"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        )}
       </div>
 
       {/* Main Navigation Links */}
@@ -62,6 +85,9 @@ export function Sidebar() {
             <Link
               key={link.href}
               href={link.href}
+              onClick={() => {
+                if (isMobile && onMobileClose) onMobileClose();
+              }}
               className={`flex items-center justify-between rounded-xl px-3.5 py-2.5 text-xs font-semibold transition-all duration-200 ${
                 link.active
                   ? "bg-primary/10 text-primary font-bold border border-primary/20 shadow-xs"
@@ -81,7 +107,7 @@ export function Sidebar() {
       </div>
 
       {/* Recruiter Profile & Logout (Bottom Only) */}
-      <div className="p-4 border-t border-sidebar-border font-sans">
+      <div className="p-4 border-t border-sidebar-border font-sans shrink-0">
         <div className="flex items-center justify-between rounded-xl p-2.5 bg-sidebar-accent/40 border border-sidebar-border/80">
           <div className="flex items-center gap-2.5 min-w-0">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground shadow-xs">
@@ -106,6 +132,32 @@ export function Sidebar() {
           </button>
         </div>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Permanent Fixed Desktop Sidebar */}
+      <aside className="hidden lg:flex fixed inset-y-0 left-0 z-40 w-64 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-xs">
+        {renderContent(false)}
+      </aside>
+
+      {/* Mobile Slide-over Drawer Overlay */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs lg:hidden animate-in fade-in duration-200"
+          onClick={onMobileClose}
+        />
+      )}
+
+      {/* Mobile Slide-over Drawer */}
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 flex w-72 max-w-[85vw] flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-none transition-transform duration-300 ease-in-out lg:hidden ${
+          mobileOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        {renderContent(true)}
+      </aside>
+    </>
   );
 }
