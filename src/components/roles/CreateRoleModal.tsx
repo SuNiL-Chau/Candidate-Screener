@@ -40,10 +40,23 @@ export function CreateRoleModal({ isOpen, onClose, onCreated }: CreateRoleModalP
   if (!isOpen) return null;
 
   const handleAddRequirement = (skillToAdd?: string) => {
-    const val = (skillToAdd || currentReq).trim();
-    if (val && !requirements.includes(val)) {
-      setRequirements([...requirements, val]);
-      if (!skillToAdd) setCurrentReq("");
+    const raw = skillToAdd !== undefined ? skillToAdd : currentReq;
+    const items = raw
+      .split(",")
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
+
+    if (items.length > 0) {
+      setRequirements((prev) => {
+        const next = [...prev];
+        for (const item of items) {
+          if (!next.includes(item)) {
+            next.push(item);
+          }
+        }
+        return next;
+      });
+      if (skillToAdd === undefined) setCurrentReq("");
     }
   };
 
@@ -96,9 +109,10 @@ export function CreateRoleModal({ isOpen, onClose, onCreated }: CreateRoleModalP
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 overflow-y-auto animate-in fade-in duration-200">
-      <div className="w-full max-w-xl max-h-[100svh] overflow-y-auto rounded-xl border border-border bg-card p-6 sm:p-7 shadow-xl animate-in zoom-in-95 duration-150 my-auto">
-        <div className="flex items-center justify-between border-b border-border pb-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 animate-in fade-in duration-200">
+      <div className="w-full max-w-xl max-h-[92svh] flex flex-col rounded-2xl border border-border bg-card shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150 my-auto">
+        {/* Sticky Modal Header */}
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-card px-6 py-4 sm:px-7 shrink-0">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
               <Briefcase className="h-5 w-5" />
@@ -112,133 +126,146 @@ export function CreateRoleModal({ isOpen, onClose, onCreated }: CreateRoleModalP
             variant="ghost"
             size="icon"
             onClick={onClose}
-            className="h-8 w-8 text-muted-foreground hover:text-foreground"
+            className="h-8 w-8 text-muted-foreground hover:text-foreground cursor-pointer"
           >
             <X className="h-4 w-4" />
           </Button>
         </div>
 
-        {error && (
-          <div className="mt-4 rounded-xl bg-destructive/10 border border-destructive/20 p-3 text-xs font-semibold text-destructive">
-            {error}
-          </div>
-        )}
+        {/* Modal Form with Scrollable Body & Sticky Footer */}
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0 overflow-hidden font-sans">
+          {/* Scrollable Content Body */}
+          <div className="flex-1 overflow-y-auto px-6 py-5 sm:px-7 space-y-4">
+            {error && (
+              <div className="rounded-xl bg-destructive/10 border border-destructive/20 p-3 text-xs font-semibold text-destructive">
+                {error}
+              </div>
+            )}
 
-        <form onSubmit={handleSubmit} className="mt-5 space-y-4 font-sans">
-          <div>
-            <label className="block text-xs font-bold text-foreground uppercase tracking-wider font-sans">
-              Position Title
-            </label>
-            <Input
-              type="text"
-              placeholder="e.g. Senior Full Stack Technical Lead"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="mt-1.5"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-bold text-foreground uppercase tracking-wider font-sans">
-              Mission & Role Scope
-            </label>
-            <Textarea
-              rows={3}
-              placeholder="Describe core initiatives, team architecture, and scope of impact..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="mt-1.5"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-bold text-foreground uppercase tracking-wider font-sans">
-              Must-Have Competencies (For Automated Fit Scoring)
-            </label>
-            <div className="mt-1.5 flex gap-2">
+            <div>
+              <label className="block text-xs font-bold text-foreground uppercase tracking-wider font-sans">
+                Position Title
+              </label>
               <Input
                 type="text"
-                placeholder="Type requirement and press Enter..."
-                value={currentReq}
-                onChange={(e) => setCurrentReq(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    handleAddRequirement();
-                  }
-                }}
-                className="flex-1"
+                placeholder="e.g. Senior Full Stack Technical Lead"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="mt-1.5"
+                required
               />
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={() => handleAddRequirement()}
-                className="gap-1.5 font-semibold"
-              >
-                <Plus className="h-4 w-4" />
-                Add
-              </Button>
             </div>
 
-            {/* Quick Suggestion Chips */}
-            <div className="mt-2.5">
-              <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5 flex items-center gap-1 font-sans">
-                <Sparkles className="h-3 w-3 text-primary" />
-                Suggested Core Requirements:
+            <div>
+              <label className="block text-xs font-bold text-foreground uppercase tracking-wider font-sans">
+                Mission & Role Scope
+              </label>
+              <Textarea
+                rows={3}
+                placeholder="Describe core initiatives, team architecture, and scope of impact..."
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="mt-1.5"
+                required
+              />
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-bold text-foreground uppercase tracking-wider font-sans">
+                  Must-Have Competencies (For Automated Fit Scoring)
+                </label>
+                <span className="text-[11px] text-muted-foreground">Comma-separated compatible</span>
               </div>
-              <div className="flex flex-wrap gap-1.5">
-                {SUGGESTED_SKILLS.filter((s) => !requirements.includes(s)).map((skill) => (
-                  <Button
-                    key={skill}
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleAddRequirement(skill)}
-                    className="h-7 px-2.5 text-[11px] font-medium hover:border-primary/40 hover:bg-primary/10 hover:text-primary"
+              <div className="mt-1.5 flex gap-2">
+                <Input
+                  type="text"
+                  placeholder="e.g. Docker, AWS, GraphQL (comma-separated)"
+                  value={currentReq}
+                  onChange={(e) => setCurrentReq(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === ",") {
+                      e.preventDefault();
+                      handleAddRequirement();
+                    }
+                  }}
+                  onBlur={() => {
+                    if (currentReq.trim()) {
+                      handleAddRequirement();
+                    }
+                  }}
+                  className="flex-1"
+                />
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => handleAddRequirement()}
+                  className="gap-1.5 font-semibold cursor-pointer"
+                >
+                  <Plus className="h-4 w-4" />
+                  Add
+                </Button>
+              </div>
+
+              {/* Quick Suggestion Chips */}
+              <div className="mt-2.5">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5 flex items-center gap-1 font-sans">
+                  <Sparkles className="h-3 w-3 text-primary" />
+                  Suggested Core Requirements:
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {SUGGESTED_SKILLS.filter((s) => !requirements.includes(s)).map((skill) => (
+                    <Button
+                      key={skill}
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleAddRequirement(skill)}
+                      className="h-7 px-2.5 text-[11px] font-medium hover:border-primary/40 hover:bg-primary/10 hover:text-primary cursor-pointer"
+                    >
+                      + {skill}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Selected Requirements Pills */}
+              <div className="mt-3 flex flex-wrap gap-2">
+                {requirements.map((req, idx) => (
+                  <Badge
+                    key={idx}
+                    variant="secondary"
+                    className="bg-primary/10 text-primary border border-primary/20 gap-1.5 py-1 px-2.5 text-xs font-semibold"
                   >
-                    + {skill}
-                  </Button>
+                    <Tag className="h-3 w-3 text-primary" />
+                    {req}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveRequirement(idx)}
+                      className="rounded-full hover:bg-primary/20 p-0.5 text-primary ml-1 cursor-pointer"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </Badge>
                 ))}
               </div>
             </div>
-
-            {/* Selected Requirements Pills */}
-            <div className="mt-3 flex flex-wrap gap-2">
-              {requirements.map((req, idx) => (
-                <Badge
-                  key={idx}
-                  variant="secondary"
-                  className="bg-primary/10 text-primary border border-primary/20 gap-1.5 py-1 px-2.5 text-xs font-semibold"
-                >
-                  <Tag className="h-3 w-3 text-primary" />
-                  {req}
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveRequirement(idx)}
-                    className="rounded-full hover:bg-primary/20 p-0.5 text-primary ml-1 cursor-pointer"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </Badge>
-              ))}
-            </div>
           </div>
 
-          <div className="mt-6 flex justify-end gap-2.5 border-t border-border pt-4">
+          {/* Sticky Modal Footer */}
+          <div className="sticky bottom-0 z-10 flex items-center justify-end gap-2.5 border-t border-border bg-card px-6 py-4 sm:px-7 shrink-0">
             <Button
               type="button"
               variant="outline"
               onClick={onClose}
-              className="text-muted-foreground"
+              className="text-muted-foreground cursor-pointer"
             >
               Cancel
             </Button>
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="gap-2 font-semibold"
+              className="gap-2 font-semibold cursor-pointer"
             >
               {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
               {isSubmitting ? "Creating Position..." : "Open Position"}
