@@ -9,6 +9,7 @@ import {
   LogOut,
   ChevronRight,
   X,
+  FileText,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -36,6 +37,12 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
       href: "/dashboard",
       icon: <Briefcase className="h-4 w-4" />,
       active: pathname === "/dashboard" || pathname.startsWith("/roles"),
+    },
+    {
+      label: "Submission Note",
+      href: "/submission-note",
+      icon: <FileText className="h-4 w-4" />,
+      active: pathname === "/submission-note",
     },
   ];
 

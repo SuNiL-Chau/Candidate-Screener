@@ -1,4 +1,12 @@
-# Crystal Group Candidate Screener - Written Submission Note
+import React from "react";
+import fs from "fs";
+import path from "path";
+import Link from "next/link";
+import { marked } from "marked";
+import { ArrowLeft, ExternalLink } from "lucide-react";
+
+// Default fallback content in case of edge bundling
+const FALLBACK_MARKDOWN = `# Crystal Group Candidate Screener - Written Submission Note
 
 **Candidate:** Full-Stack Technical Lead Applicant  
 **Assignment:** Crystal Group - Full-Stack Technical Lead Take-Home Assignment v4  
@@ -119,3 +127,81 @@ This separation lets each specialist own a clear surface while keeping the AI la
 - **~1.0 hr - Deployment/testing/documentation:** production deployment, end-to-end validation, adversarial test cases, and submission documentation
 
 The main trade-off was to prioritize **integrity detection, evidence quality, and a coherent end-to-end workflow** over broader enterprise features that were outside the core assignment scope.
+`;
+
+function getMarkdownContent(): string {
+  try {
+    const filePath = path.join(process.cwd(), "SUBMISSION_NOTE.md");
+    if (fs.existsSync(filePath)) {
+      return fs.readFileSync(filePath, "utf-8");
+    }
+  } catch {
+    // fallback if filesystem access fails in serverless sandbox
+  }
+  return FALLBACK_MARKDOWN;
+}
+
+export default async function SubmissionNotePage() {
+  const rawMarkdown = getMarkdownContent();
+  const htmlContent = await marked.parse(rawMarkdown);
+
+  return (
+    <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
+      {/* Minimal Top Header */}
+      <header className="sticky top-0 z-30 w-full border-b border-border bg-background/80 backdrop-blur-md">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+          <Link
+            href="/dashboard"
+            className="flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" />
+            <span>Back to Dashboard</span>
+          </Link>
+
+          <div className="flex items-center gap-3">
+            <span className="text-[11px] font-mono text-muted-foreground uppercase tracking-wider hidden sm:inline-block">
+              Public Note • No Auth Required
+            </span>
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-xs"
+            >
+              <span>Live App</span>
+              <ExternalLink className="h-3 w-3" />
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Document Content */}
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+        <article
+          className="markdown-content"
+          dangerouslySetInnerHTML={{ __html: htmlContent }}
+        />
+
+        {/* Minimal Footer */}
+        <div className="mt-14 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
+          <p>
+            Crystal Group Candidate Screener &bull; Take-Home Assignment v4
+          </p>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/dashboard"
+              className="text-primary hover:underline font-medium"
+            >
+              Dashboard
+            </Link>
+            <span>&bull;</span>
+            <Link
+              href="/login"
+              className="text-muted-foreground hover:text-foreground"
+            >
+              Login Demo
+            </Link>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
