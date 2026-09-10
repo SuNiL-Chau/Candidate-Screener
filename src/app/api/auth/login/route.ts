@@ -35,9 +35,11 @@ export async function POST(request: Request) {
 
     return response;
   } catch (error) {
+    console.error("Login API error:", error);
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: "Invalid credentials format" }, { status: 400 });
     }
-    return NextResponse.json({ error: "Authentication failed" }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Authentication failed";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
